@@ -1,3 +1,4 @@
+import aws_cdk as cdk
 from aws_cdk import (
     aws_s3 as s3
 )
@@ -16,5 +17,6 @@ class S3Construct(Construct):
             self,
             's3-bucket-constructor',
             bucket_name=bucket_name + "-" + aws_account_id,
-            block_public_access=s3.BlockPublicAccess.BLOCK_ALL
+            block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
+            removal_policy=cdk.RemovalPolicy.DESTROY
         )

@@ -22,3 +22,10 @@ def test_s3_bucket_blocks_public_access(stack_template):
             "RestrictPublicBuckets": True
         }
     })
+
+
+def test_bucket_removal_policy_is_destroy(stack_template):
+    stack_template.has_resource("AWS::S3::Bucket", {
+        "UpdateReplacePolicy": "Delete",
+        "DeletionPolicy": "Delete"
+    })
