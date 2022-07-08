@@ -12,8 +12,9 @@ specifically, the AWS CDK.
 
 Please consider hiring me :)
 
-Obviously, a real ETL pipeline would have:
-- Separate, decoupled transform and load processes
+Obviously, this is only the E in a potential ETL pipeline. A real ETL pipeline would have:
+- Separate, decoupled transform and load processes (likely in separate code bases)
 - Idempotent tasks, whenever possible
+- Error handling, retry logic, and failure notifications
 
 ![architecture](img/fred-data-extractor.png)
