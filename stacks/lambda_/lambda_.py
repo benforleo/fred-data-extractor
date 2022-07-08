@@ -26,8 +26,8 @@ class LambdaConstruct(Construct):
 
         lambda_role = iam.Role(
             self,
-            'fred-lambda_-role',
-            assumed_by=iam.ServicePrincipal('lambda_.amazonaws.com'),
+            'fred-lambda-role',
+            assumed_by=iam.ServicePrincipal('lambda.amazonaws.com'),
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
             ]
@@ -35,7 +35,7 @@ class LambdaConstruct(Construct):
 
         policy = iam.Policy(
             self,
-            'lambda_-writer-policy',
+            'lambda-writer-policy',
             statements=[
                 iam.PolicyStatement(
                     actions=[
