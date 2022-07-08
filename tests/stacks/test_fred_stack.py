@@ -1,3 +1,4 @@
+import os
 import pytest
 import aws_cdk as core
 import aws_cdk.assertions as assertions
@@ -8,7 +9,7 @@ from stacks.fred_stack import FredStack
 @pytest.fixture
 def stack_template():
     app = core.App()
-    stack = FredStack(app, "fred-stack", properties=stack_config)
+    stack = FredStack(app, "fred-stack", bucket_name='test-bucket', properties=stack_config)
     template = assertions.Template.from_stack(stack)
     return template
 
