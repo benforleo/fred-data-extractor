@@ -4,6 +4,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 from .s3.s3 import S3Construct
+from .lambda_.lambda_ import LambdaConstruct
 from .configuration.stack_configuration import stack_config
 
 
@@ -18,3 +19,6 @@ class FredStack(Stack):
             bucket_name="fred-data-bucket",
             aws_account_id=properties['ENV']['account']
         )
+
+        lambda_ = LambdaConstruct(self, 'my-lambda_') \
+            .python_lambda_generator("fred-data-bucket", aws_account_id=properties['ENV']['account'])
