@@ -16,7 +16,6 @@ class LambdaConstruct(Construct):
         self.bucket = bucket
 
     def python_lambda_generator(self):
-
         func = lambda_.Function(
             self,
             'fred-extract-function',
@@ -24,7 +23,8 @@ class LambdaConstruct(Construct):
             code=lambda_.Code.from_asset("./lambda_"),
             handler='index.handler',
             role=self.python_lambda_role(),
-            layers=[self.python_lambda_layer()]
+            layers=[self.python_lambda_layer()],
+            environment={"FRED_BUCKET_NAME": self.bucket.bucket_name}
         )
         return func
 
@@ -56,9 +56,7 @@ class LambdaConstruct(Construct):
                 )
             ]
         )
-
         lambda_role.attach_inline_policy(policy)
-
         return lambda_role
 
     def python_lambda_layer(self):
