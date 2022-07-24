@@ -1,8 +1,11 @@
+import aws_cdk
 import aws_cdk as cdk
 from aws_cdk import (
     aws_lambda as lambda_,
     aws_iam as iam,
-    aws_s3 as s3
+    aws_s3 as s3,
+    BundlingOptions,
+    DockerImage
 )
 from constructs import Construct
 
@@ -13,14 +16,15 @@ class LambdaConstruct(Construct):
         self.bucket = bucket
 
     def python_lambda_generator(self):
-
         func = lambda_.Function(
             self,
             'fred-extract-function',
             runtime=lambda_.Runtime.PYTHON_3_9,
             code=lambda_.Code.from_asset("./lambda_"),
             handler='index.handler',
-            role=self.python_lambda_role()
+            role=self.python_lambda_role(),
+            layers=[self.python_lambda_layer()],
+            environment={"FRED_BUCKET_NAME": self.bucket.bucket_name}
         )
         return func
 
@@ -52,7 +56,23 @@ class LambdaConstruct(Construct):
                 )
             ]
         )
-
         lambda_role.attach_inline_policy(policy)
-
         return lambda_role
+
+    def python_lambda_layer(self):
+        lambda_layer = lambda_.LayerVersion(
+            self,
+            'requests-layer',
+            code=lambda_.Code.from_asset(
+                "./lambda_",
+                bundling=BundlingOptions(
+                    image=DockerImage("public.ecr.aws/sam/build-python3.9:latest"),
+                    command=["pip", "install", "--target", "/asset-output/python", "-r", "requirements.txt"],
+                    user="root",
+                    working_directory="/asset-input"
+                )
+            ),
+            compatible_architectures=[lambda_.Architecture.X86_64],
+            compatible_runtimes=[lambda_.Runtime.PYTHON_3_9]
+        )
+        return lambda_layer
