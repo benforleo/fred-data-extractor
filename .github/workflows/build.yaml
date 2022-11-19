@@ -1,5 +1,5 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Build
+run-name: ${{ github.actor }} is running the fred-data-extractor build
 on: [push]
 jobs:
   Python-Build:
@@ -8,7 +8,10 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - run: docker --version
+      - run: python3 -m pip install tox
+      - run: tox
+      - run: echo "This job's status is ${{ job.status }}."
+
 #      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
 #      - name: List files in the repository
 #        run: |
