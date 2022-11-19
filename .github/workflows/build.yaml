@@ -1,4 +1,4 @@
-name: Build
+name: build
 run-name: ${{ github.actor }} is running the fred-data-extractor build
 on: [push]
 jobs:

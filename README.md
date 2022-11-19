@@ -1,4 +1,8 @@
 # FRED Data Extractor
+
+---
+![](https://img.shields.io/github/workflow/status/benforleo/fred-data-extractor/build)
+
 Greetings! 
 
 The fred data extractor is a work in progress and is under active development. 
