@@ -1,7 +1,7 @@
 # FRED Data Extractor
 
 ---
-![](https://img.shields.io/github/workflow/status/benforleo/fred-data-extractor/build)
+![Build Status](https://img.shields.io/github/workflow/status/benforleo/fred-data-extractor/build/main)
 [![Coverage Status](https://coveralls.io/repos/github/benforleo/fred-data-extractor/badge.svg?branch=main)](https://coveralls.io/github/benforleo/fred-data-extractor?branch=main)
 
 Greetings! 
