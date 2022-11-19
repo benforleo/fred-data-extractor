@@ -12,10 +12,9 @@ jobs:
           python-version: '3.9'
       - run: python3 -m pip install tox
       - run: tox
-      - run: echo "This job's status is ${{ job.status }}."
-
-#      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-#      - name: List files in the repository
-#        run: |
-#          ls ${{ github.workspace }}
-#      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
+      - run: echo "🍏 This job's status is ${{ job.status }}."
