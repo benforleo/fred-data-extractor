@@ -9,8 +9,6 @@ logger.setLevel(logging.INFO)
 
 
 class FredExtractor:
-    data = None
-
     def __init__(self, event, context, session: boto3.Session, bucket, series_id="SP500") -> None:
         self.event = event
         self.context = context
@@ -18,6 +16,7 @@ class FredExtractor:
         self.bucket = bucket
         self.series_id = series_id
         self.observation_date = self.generate_observation_date(event)
+        self.data = None
 
     def execute(self):
         self.request_fred_data() \
