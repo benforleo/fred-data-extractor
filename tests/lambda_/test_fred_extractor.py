@@ -10,7 +10,6 @@ class TestFredExtractor:
     @patch.object(FredExtractor, 'retrieve_api_key')
     @patch('lambda_.fred_extractor.requests', spec=True)
     def test_request_fred_data_raises_exception_for_http_error(self, mock_requests, mock_fred_extractor, event_fixture):
-
         # Mock the response object to the get request
         mock_response = Mock(status_code=403)
         mock_response.raise_for_status.side_effect = HTTPError('Something goes wrong')
@@ -70,6 +69,16 @@ class TestFredExtractor:
         fred.request_fred_data()
         assert fred.data == {'mock': 'data'}
 
+    def test_generate_s3_object_key_produces_desired_s3_path(self):
+        fred = FredExtractor(None, None, None, None)
+        fake_datetime = datetime(2022, 1, 1)
+        fred.observation_date = fake_datetime
+        fred.series_id = 'SP500'
+
+        key = fred.generate_s3_object_key()
+        assert key == "fred/SP500/year=2022/month=01/SP500-2022-01-01.json"
+
     def test_generate_observation_date_returns_valid_datetime(self, event_fixture):
         observation_datetime = FredExtractor.generate_observation_date(event_fixture)
         assert isinstance(observation_datetime, datetime)
+        assert observation_datetime == datetime(2022, 7, 21)

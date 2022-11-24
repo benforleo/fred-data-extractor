@@ -15,7 +15,7 @@ class FredExtractor:
         self.session = session
         self.bucket = bucket
         self.series_id = series_id
-        self.observation_date = self.generate_observation_date(event)
+        self.observation_date = self.generate_observation_date(event) if event is not None else None
         self.data = None
 
     def execute(self):
