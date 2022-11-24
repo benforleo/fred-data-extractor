@@ -8,19 +8,53 @@ from lambda_.fred_extractor import FredExtractor
 
 class TestFredExtractor:
     @patch.object(FredExtractor, 'retrieve_api_key')
-    @patch('lambda_.fred_extractor.requests')
+    @patch('lambda_.fred_extractor.requests', spec=True)
     def test_request_fred_data_raises_exception_for_http_error(self, mock_requests, mock_fred_extractor, event_fixture):
 
-        mock_requests.exceptions = requests.exceptions
+        # Mock the response object to the get request
         mock_response = Mock(status_code=403)
         mock_response.raise_for_status.side_effect = HTTPError('Something goes wrong')
+
+        # Mock the requests module itself, returning our mock response from the get call
+        mock_requests.exceptions = requests.exceptions
         mock_requests.get.return_value = mock_response
 
+        # Stub the retrieve_api_method
         mock_fred_extractor.retrieve_api_key.return_value = '1234'
+
         fred = FredExtractor(event_fixture, None, None, None)
 
         with pytest.raises(RequestException):
             fred.request_fred_data()
+
+    @patch.object(FredExtractor, 'retrieve_api_key')
+    @patch('lambda_.fred_extractor.requests')
+    def test_request_fred_data_arguments(self, mock_requests, mock_retrieve_api_key, event_fixture):
+        # Mock retrieve api key
+        mock_retrieve_api_key.side_effect = lambda: 'fake-api-key'
+
+        # Stub the response from requests.get
+        mock_response = Mock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = "Fake response"
+
+        mock_requests.get.return_value = mock_response
+
+        fred = FredExtractor(event_fixture, None, None, None)
+        fred.request_fred_data()
+
+        mock_requests.get.assert_called_once()
+        mock_requests.get.assert_called_with(
+            url="https://api.stlouisfed.org/fred/series/observations",
+            params={
+                'series_id': 'SP500',
+                'frequency': 'd',
+                'observation_start': '2022-07-21',  # - 1 day from fixture event time
+                'observation_end': '2022-07-21',
+                'api_key': 'fake-api-key',
+                'file_type': 'json'
+            }
+        )
 
     @patch.object(FredExtractor, 'retrieve_api_key')
     @patch('lambda_.fred_extractor.requests')
