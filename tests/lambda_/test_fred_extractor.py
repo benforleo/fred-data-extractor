@@ -1,8 +1,11 @@
+import boto3.session
 import pytest
 from unittest.mock import Mock, patch
 from datetime import datetime
 from requests import HTTPError, RequestException
 import requests.exceptions
+from boto3 import Session
+from botocore.stub import Stubber
 from lambda_.fred_extractor import FredExtractor
 
 
@@ -68,6 +71,35 @@ class TestFredExtractor:
 
         fred.request_fred_data()
         assert fred.data == {'mock': 'data'}
+
+    def test_retrieve_api_key_returns_correct_secret_key(self, event_fixture, secret_response_fixture):
+        mock_session = Mock()
+
+        client = boto3.session.Session().client(service_name='secretsmanager', region_name='us-east-1')
+        mock_session.client.return_value = client
+
+        # stub the S3 client with secret_response fixture
+        secrets_stubber = Stubber(client)
+        secrets_stubber.add_response('get_secret_value', secret_response_fixture)
+
+        with secrets_stubber:
+            fred = FredExtractor(event_fixture, None, mock_session, 'fake-bucket')
+            api_key = fred.retrieve_api_key()
+
+        assert api_key == 'super-secret-key'
+
+    def test_retrieve_api_key_makes_boto3_calls_with_correct_arguments(self, event_fixture):
+        mock_session = Mock()
+        mock_client = Mock()
+
+        mock_session.client.return_value = mock_client
+        mock_client.get_secret_value.return_value = {'SecretString': '{"fred-api-key": "fake-secret"}'}
+
+        fred = FredExtractor(event_fixture, None, mock_session, 'fake-bucket')
+        fred.retrieve_api_key()
+
+        mock_session.client.assert_called_once_with(service_name='secretsmanager')
+        mock_client.get_secret_value.assert_called_once_with(SecretId="dev/FredExtractor/APIKey")
 
     def test_generate_s3_object_key_produces_desired_s3_path(self):
         fred = FredExtractor(None, None, None, None)
