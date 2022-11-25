@@ -75,7 +75,7 @@ class TestFredExtractor:
     def test_retrieve_api_key_returns_correct_secret_key(self, event_fixture, secret_response_fixture):
         mock_session = Mock()
 
-        client = boto3.session.Session().client(service_name='secretsmanager')
+        client = boto3.session.Session().client(service_name='secretsmanager', region_name='us-east-1')
         mock_session.client.return_value = client
 
         # stub the S3 client with secret_response fixture
