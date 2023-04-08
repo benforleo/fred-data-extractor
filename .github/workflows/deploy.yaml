@@ -1,9 +1,10 @@
 name: Deploy or Rollback
 on:
-  release:
-    types:
-      - published
-      - deleted
+  - push
+#  release:
+#    types:
+#      - published
+#      - deleted
 jobs:
   AWS-Deployment:
     name: Deploy CDK App
@@ -14,7 +15,7 @@ jobs:
       contents: read
     steps:
       - name: run tests
-        uses: .github/workflows/tests.yaml
+        uses: ./.github/workflows/tests.yaml@main
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2

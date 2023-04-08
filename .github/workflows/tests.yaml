@@ -1,7 +1,7 @@
 name: Python Tests
 run-name: ${{ github.actor }} is running ${{ vars.JOB_NAME }}
 on:
-  - push
+#  - push
   - workflow_call
 
 jobs:
