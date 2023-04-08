@@ -1,0 +1,34 @@
+name: Deploy or Rollback
+on:
+  release:
+    types:
+      - published
+      - deleted
+jobs:
+  AWS-Deployment:
+    name: Deploy CDK App
+    runs-on: ubuntu-latest
+    environment: development
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: run tests
+        uses: .github/workflows/tests.yaml
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-FredDataExtractorRole-PU83N4BU7R4X
+          aws-region: us-east-1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.20.0'
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@2.73.0
+
+      - name: Deploy CDK Application
+        run: cdk deploy --require-approval never --tags app=fred-data-extractor
+
