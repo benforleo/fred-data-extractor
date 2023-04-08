@@ -14,6 +14,9 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
       - name: run tests
         uses: ./.github/workflows/tests.yaml
 
