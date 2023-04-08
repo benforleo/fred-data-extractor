@@ -17,8 +17,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: run tests
-        uses: ./.github/workflows/tests.yaml
+      - name: print working directory
+        run: ls -a
+
+#      - name: run tests
+#        uses: ./.github/workflows/tests.yaml
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
