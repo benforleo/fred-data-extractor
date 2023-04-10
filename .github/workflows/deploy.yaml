@@ -6,22 +6,21 @@ on:
 #      - published
 #      - deleted
 jobs:
-  AWS-Deployment:
+  run-tests:
+    uses: benforleo/fred-data-extractor/.github/workflows/tests.yaml@main
+
+  aws-deployment:
     name: Deploy CDK App
     runs-on: ubuntu-latest
     environment: development
+    needs:
+      - run-tests
     permissions:
       id-token: write
       contents: read
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-
-      - name: print working directory
-        run: ls -a
-
-#      - name: run tests
-#        uses: ./.github/workflows/tests.yaml
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -32,9 +31,15 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.20.0'
-
       - name: Install AWS CDK
         run: npm install -g aws-cdk@2.73.0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Python dependencies
+        run: python3 -m pip install -r requirements.txt
 
       - name: Deploy CDK Application
         run: cdk deploy --require-approval never --tags app=fred-data-extractor
