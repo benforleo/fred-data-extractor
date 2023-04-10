@@ -1,6 +1,6 @@
 # FRED Data Extractor
 
-![Build Status](https://img.shields.io/github/workflow/status/benforleo/fred-data-extractor/build/main?kill_cache=1)
+![Build Status](https://img.shields.io/github/actions/workflow/status/benforleo/fred-data-extractor/tests.yaml?branch=main)
 [![Coverage Status](https://coveralls.io/repos/github/benforleo/fred-data-extractor/badge.svg?branch=main&kill_cache=1)](https://coveralls.io/github/benforleo/fred-data-extractor?branch=main)
 
 Greetings! 
