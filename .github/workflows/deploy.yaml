@@ -1,10 +1,10 @@
 name: Deploy or Rollback
 on:
-  - push
-#  release:
-#    types:
-#      - published
-#      - deleted
+  release:
+    types:
+      - published
+      - deleted
+
 jobs:
   run-tests:
     uses: benforleo/fred-data-extractor/.github/workflows/tests.yaml@main
