@@ -4,6 +4,7 @@ on:
     types:
       - published
       - deleted
+  workflow_dispatch:
 
 jobs:
   run-tests:
