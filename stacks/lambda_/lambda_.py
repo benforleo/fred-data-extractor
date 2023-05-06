@@ -5,7 +5,8 @@ from aws_cdk import (
     aws_iam as iam,
     aws_s3 as s3,
     BundlingOptions,
-    DockerImage
+    DockerImage,
+    Duration
 )
 from constructs import Construct
 
@@ -19,12 +20,14 @@ class LambdaConstruct(Construct):
         func = lambda_.Function(
             self,
             'fred-extract-function',
+            function_name="fred-extractor",
             runtime=lambda_.Runtime.PYTHON_3_9,
             code=lambda_.Code.from_asset("./lambda_"),
             handler='index.handler',
             role=self.python_lambda_role(),
             layers=[self.python_lambda_layer()],
-            environment={"FRED_BUCKET_NAME": self.bucket.bucket_name}
+            environment={"FRED_BUCKET_NAME": self.bucket.bucket_name},
+            timeout=Duration.seconds(45)
         )
         return func
 
@@ -33,6 +36,7 @@ class LambdaConstruct(Construct):
         lambda_role = iam.Role(
             self,
             'fred-lambda-role',
+            role_name="fred-extractor-execution-role",
             assumed_by=iam.ServicePrincipal('lambda.amazonaws.com'),
             managed_policies=[
                 iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
@@ -42,6 +46,7 @@ class LambdaConstruct(Construct):
         policy = iam.Policy(
             self,
             'lambda-writer-policy',
+            policy_name="fred-extractor-execution-policy",
             statements=[
                 iam.PolicyStatement(
                     actions=[
@@ -52,6 +57,15 @@ class LambdaConstruct(Construct):
                     resources=[
                         f'arn:aws:s3:::{self.bucket.bucket_name}/*',
                         f'arn:aws:s3:::{self.bucket.bucket_name}'
+                    ]
+                ),
+                iam.PolicyStatement(
+                    actions=[
+                        'secretsmanager:GetSecretValue'
+                    ],
+                    effect=iam.Effect.ALLOW,
+                    resources=[
+                        "arn:aws:secretsmanager:us-east-1:429414942599:secret:dev/FredExtractor/APIKey-ujB357"
                     ]
                 )
             ]
