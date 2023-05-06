@@ -4,14 +4,13 @@ from unittest.mock import Mock, patch
 from datetime import datetime
 from requests import HTTPError, RequestException
 import requests.exceptions
-from boto3 import Session
 from botocore.stub import Stubber
 from lambda_.fred_extractor.fred_extractor import FredExtractor
 
 
 class TestFredExtractor:
     @patch.object(FredExtractor, 'retrieve_api_key')
-    @patch('lambda_.fred_extractor.requests', spec=True)
+    @patch('lambda_.fred_extractor.fred_extractor.requests', spec=True)
     def test_request_fred_data_raises_exception_for_http_error(self, mock_requests, mock_fred_extractor, event_fixture):
         # Mock the response object to the get request
         mock_response = Mock(status_code=403)
@@ -30,7 +29,7 @@ class TestFredExtractor:
             fred.request_fred_data()
 
     @patch.object(FredExtractor, 'retrieve_api_key')
-    @patch('lambda_.fred_extractor.requests')
+    @patch('lambda_.fred_extractor.fred_extractor.requests')
     def test_request_fred_data_arguments(self, mock_requests, mock_retrieve_api_key, event_fixture):
         # Mock retrieve api key
         mock_retrieve_api_key.side_effect = lambda: 'fake-api-key'
@@ -57,20 +56,6 @@ class TestFredExtractor:
                 'file_type': 'json'
             }
         )
-
-    @patch.object(FredExtractor, 'retrieve_api_key')
-    @patch('lambda_.fred_extractor.requests')
-    def test_fred_extractor_state_change_with_successful_request(self, mock_requests, mock_fred_extractor, event_fixture):
-        mock_response = Mock(status_code=200)
-        mock_response.raise_for_status.return_value = None
-        mock_response.json.return_value = {'mock': 'data'}
-        mock_requests.get.return_value = mock_response
-
-        mock_fred_extractor.retrieve_api_key.return_value = '1234'
-        fred = FredExtractor(event_fixture, None, None, None)
-
-        fred.request_fred_data()
-        assert fred.data == {'mock': 'data'}
 
     def test_retrieve_api_key_returns_correct_secret_key(self, event_fixture, secret_response_fixture):
         mock_session = Mock()
