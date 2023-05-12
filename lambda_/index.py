@@ -17,6 +17,7 @@ def handler(event, context):
             series_id="SP500"
         )
         fred.execute()
+        return {"statusCode": 200}
 
     except Exception as err:
         raise err
