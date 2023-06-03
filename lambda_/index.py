@@ -16,8 +16,8 @@ def handler(event, context):
             bucket,
             series_id="SP500"
         )
-        fred.execute()
-        return {"statusCode": 200}
+        response = fred.execute()
+        return response
 
     except Exception as err:
         raise err
