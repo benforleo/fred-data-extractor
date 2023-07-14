@@ -1,6 +1,6 @@
 import os
 import boto3
-from fred_extractor.fred_extractor import FredExtractor
+from lambda_.functions.extract.fred_extractor import FredExtractor
 
 bucket = os.getenv("FRED_BUCKET_NAME")
 

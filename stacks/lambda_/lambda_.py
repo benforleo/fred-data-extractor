@@ -14,13 +14,13 @@ class LambdaConstruct(Construct):
         super().__init__(scope, id, **kwargs)
         self.bucket = bucket
 
-    def python_lambda_generator(self):
+    def python_lambda_generator(self, code_path):
         func = lambda_.Function(
             self,
             'fred-extract-function',
             function_name="fred-extractor",
             runtime=lambda_.Runtime.PYTHON_3_9,
-            code=lambda_.Code.from_asset("./lambda_"),
+            code=lambda_.Code.from_asset(code_path),
             handler='index.handler',
             role=self.python_lambda_role(),
             layers=[self.python_lambda_layer()],
@@ -76,7 +76,7 @@ class LambdaConstruct(Construct):
             self,
             'requests-layer',
             code=lambda_.Code.from_asset(
-                "./lambda_",
+                "./lambda_/layer",
                 bundling=BundlingOptions(
                     image=DockerImage("public.ecr.aws/sam/build-python3.9:latest"),
                     command=["pip", "install", "--target", "/asset-output/python", "-r", "requirements.txt"],

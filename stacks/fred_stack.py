@@ -18,6 +18,6 @@ class FredStack(Stack):
         )
 
         lambda_ = LambdaConstruct(self, 'my-lambda', bucket) \
-            .python_lambda_generator()
+            .python_lambda_generator("./lambda_/functions/extract")
 
         FredSchedulerConstruct(self, 'fred-scheduler', lambda_).apply_schedule("cron(0 8 ? * TUE-SAT *)")

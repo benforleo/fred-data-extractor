@@ -5,12 +5,12 @@ from datetime import datetime
 from requests import HTTPError, RequestException
 import requests.exceptions
 from botocore.stub import Stubber
-from lambda_.fred_extractor.fred_extractor import FredExtractor
+from lambda_.functions.extract.fred_extractor.fred_extractor import FredExtractor
 
 
 class TestFredExtractor:
 
-    @patch('lambda_.fred_extractor.fred_extractor.requests', spec=True)
+    @patch('lambda_.functions.extract.fred_extractor.fred_extractor.requests', spec=True)
     def test_request_fred_data_raises_exception_for_http_error(self, mock_requests, event_fixture):
         # Mock the response object to the get request
         mock_response = Mock(status_code=403)
@@ -25,7 +25,7 @@ class TestFredExtractor:
         with pytest.raises(RequestException):
             fred.request_fred_data(api_key="fake-api-key")
 
-    @patch('lambda_.fred_extractor.fred_extractor.requests')
+    @patch('lambda_.functions.extract.fred_extractor.fred_extractor.requests', spec=True)
     def test_request_fred_data_arguments(self, mock_requests, event_fixture):
 
         # Stub the response from requests.get
