@@ -45,7 +45,7 @@ class FredExtractor:
             'file_type': 'json'
         }
         try:
-            r = requests.get(url=FredExtractor.url, params=params)
+            r = requests.get(url=FredExtractor.url, params=params, timeout=180)
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as err:
