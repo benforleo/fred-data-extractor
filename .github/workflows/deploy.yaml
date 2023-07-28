@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: '16.20.0'
       - name: Install AWS CDK
-        run: npm install -g aws-cdk@2.73.0
+        run: npm install -g aws-cdk@latest
 
       - uses: actions/setup-python@v4
         with:
