@@ -48,7 +48,8 @@ class TestFredExtractor:
                 'observation_end': '2022-07-21',
                 'api_key': 'fake-api-key',
                 'file_type': 'json'
-            }
+            },
+            timeout=180
         )
 
     def test_retrieve_api_key_returns_correct_secret_key(self, event_fixture, secret_response_fixture):
