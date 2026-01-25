@@ -16,6 +16,7 @@ deps = [
 
 commands = [
     ["pre-commit", "run", "--all-files", "-v", { replace = "posargs", extend = true }],
+    ["coverage", "lcov", "-o", "./coverage/lcov.info"]
 ]
 
 [tool.pytest.ini_options]
