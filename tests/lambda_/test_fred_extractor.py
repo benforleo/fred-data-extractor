@@ -5,7 +5,7 @@ from datetime import datetime
 from requests import HTTPError, RequestException
 import requests.exceptions
 from botocore.stub import Stubber
-from lambda_.fred_extractor.fred_extractor import FredExtractor
+from src.fred_extractor.fred_extractor import FredExtractor
 
 
 class TestFredExtractor:
