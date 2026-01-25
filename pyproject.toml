@@ -1,0 +1,61 @@
+[tool.tox]
+requires = ["tox>=4.0"]
+env_list = ["py314"]
+no_package = true
+
+[tool.tox.env.py314]
+description = "Run tests with Python 3.14"
+deps = [
+    "-rrequirements.txt",
+    "-rlambda_/requirements.txt",
+    "pytest",
+    "pytest-cov",
+    "pre-commit",
+    "ruff"
+]
+
+commands = [
+    ["pre-commit", "run", "--all-files", "-v", { replace = "posargs", extend = true }],
+]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--junitxml=test-reports/junit.xml",
+    "--cov=lambda_/fred_extractor",
+    "--cov-report=xml:test-reports/coverage.xml",
+    "--cov-report=html",
+]
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py"
+]
+
+[tool.coverage.run]
+source = ["lambda_/fred_extractor"]
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+include = ["lambda_/fred_extractor/*"]
+show_missing = true
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+include = ["lambda_/**/*.py", "stacks/**/*.py"]
+
+[tool.ruff.lint]
+select = [
+    "B",  # flake8-bugbear
+    "C", # flake8-comprehensions
+    "E",  # pycodestyle errors
+    "F",  # pyflakes errors
+    "I", # isort
+    "W",  # pycodestyle warnings
+    "C90",  # McCabe complexity
+#    "ANN",  # flake8-annotations
+    "S",  # flake8-bandit
+]
+
+

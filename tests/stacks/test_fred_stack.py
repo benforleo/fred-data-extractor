@@ -1,9 +1,9 @@
-import os
+# import os
 import pytest
-import aws_cdk as core
-import aws_cdk.assertions as assertions
-from stacks.configuration.stack_configuration import stack_config
-from stacks.fred_stack import FredStack
+# import aws_cdk as core
+# import aws_cdk.assertions as assertions
+# from stacks.configuration.stack_configuration import stack_config
+# from stacks.fred_stack import FredStack
 
 
 @pytest.mark.slow

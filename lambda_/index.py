@@ -1,4 +1,5 @@
 import os
+
 import boto3
 from fred_extractor.fred_extractor import FredExtractor
 
@@ -9,13 +10,7 @@ def handler(event, context):
     session = boto3.session.Session()
 
     try:
-        fred = FredExtractor(
-            event,
-            context,
-            session,
-            bucket,
-            series_id="SP500"
-        )
+        fred = FredExtractor(event, context, session, bucket, series_id="SP500")
         response = fred.execute()
         return response
 
