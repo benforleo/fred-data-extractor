@@ -28,7 +28,7 @@ class LambdaConstruct(Construct):
             "fred-extract-function",
             function_name=self.LAMBDA_FUNCTION_NAME,
             runtime=self.PYTHON_RUNTIME,
-            code=lambda_.Code.from_asset("./lambda_"),
+            code=lambda_.Code.from_asset("./src"),
             handler="index.handler",
             role=self.python_lambda_role(),
             layers=[self.python_lambda_layer()],
@@ -86,7 +86,7 @@ class LambdaConstruct(Construct):
             "requests-layer",
             layer_version_name=self.LAYER_NAME,
             code=lambda_.Code.from_asset(
-                "./lambda_",
+                "./src",
                 bundling=BundlingOptions(
                     image=self._get_build_image(),
                     command=[

@@ -18,16 +18,13 @@ class FredExtractor:
     and stores it in S3 with partitioned structure.
     """
 
-    # API Configuration
     API_URL = "https://api.stlouisfed.org/fred/series/observations"
     API_TIMEOUT = 180
     DEFAULT_SERIES_ID = "SP500"
 
-    # AWS Configuration
-    SECRET_ID = "dev/FredExtractor/APIKey"
-    SECRET_KEY = "fred-api-key"
+    SECRET_NAME = "dev/FredExtractor/APIKey"  # noqa: S105
+    SECRET_KEY = "fred-api-key"  # noqa: S105
 
-    # HTTP Status Codes
     HTTP_OK = 200
     HTTP_NO_CONTENT = 204
 
@@ -141,19 +138,13 @@ class FredExtractor:
         }
 
         try:
-            response = requests.get(
-                url=self.API_URL,
-                params=params,
-                timeout=self.API_TIMEOUT
-            )
+            response = requests.get(url=self.API_URL, params=params, timeout=self.API_TIMEOUT)
             response.raise_for_status()
 
             data = response.json()
             self._validate_api_response(data)
 
-            logger.info(
-                f"[FredExtractor][request_fred_data] Received {len(data.get('observations', []))} observations"
-            )
+            logger.info(f"[FredExtractor][request_fred_data] Received {len(data.get('observations', []))} observations")
             return data
 
         except requests.exceptions.HTTPError as e:
@@ -225,17 +216,13 @@ class FredExtractor:
             )
 
             logger.info(
-                f"[FredExtractor][store_fred_data_in_s3] Successfully saved data to "
-                f"s3://{self.bucket}/{object_key}"
+                f"[FredExtractor][store_fred_data_in_s3] Successfully saved data to s3://{self.bucket}/{object_key}"
             )
             return {"HTTPStatusCode": response["ResponseMetadata"]["HTTPStatusCode"]}
 
         except ClientError as e:
             error_code = e.response.get("Error", {}).get("Code", "Unknown")
-            logger.error(
-                f"[FredExtractor][store_fred_data_in_s3] Failed to upload to S3: {error_code}",
-                exc_info=True
-            )
+            logger.error(f"[FredExtractor][store_fred_data_in_s3] Failed to upload to S3: {error_code}", exc_info=True)
             raise
 
     def retrieve_api_key(self) -> str:
@@ -254,18 +241,16 @@ class FredExtractor:
             logger.debug("[FredExtractor][retrieve_api_key] Using cached API key")
             return self._api_key
 
-        logger.info(f"[FredExtractor][retrieve_api_key] Retrieving secret: {self.SECRET_ID}")
+        logger.info(f"[FredExtractor][retrieve_api_key] Retrieving secret: {self.SECRET_NAME}")
 
         try:
             client = self.session.client(service_name="secretsmanager")
-            response = client.get_secret_value(SecretId=self.SECRET_ID)
+            response = client.get_secret_value(SecretId=self.SECRET_NAME)
 
             secret = json.loads(response["SecretString"])
 
             if self.SECRET_KEY not in secret:
-                raise ValueError(
-                    f"Secret '{self.SECRET_ID}' missing required key: '{self.SECRET_KEY}'"
-                )
+                raise ValueError(f"Secret '{self.SECRET_NAME}' missing required key: '{self.SECRET_KEY}'")
 
             self._api_key = secret[self.SECRET_KEY]
             logger.info("[FredExtractor][retrieve_api_key] Successfully retrieved API key")
@@ -273,17 +258,11 @@ class FredExtractor:
 
         except ClientError as e:
             error_code = e.response.get("Error", {}).get("Code", "Unknown")
-            logger.error(
-                f"[FredExtractor][retrieve_api_key] Failed to retrieve secret: {error_code}",
-                exc_info=True
-            )
+            logger.error(f"[FredExtractor][retrieve_api_key] Failed to retrieve secret: {error_code}", exc_info=True)
             raise
         except json.JSONDecodeError as e:
-            logger.error(
-                f"[FredExtractor][retrieve_api_key] Invalid JSON in secret",
-                exc_info=True
-            )
-            raise ValueError(f"Secret '{self.SECRET_ID}' contains invalid JSON") from e
+            logger.error("[FredExtractor][retrieve_api_key] Invalid JSON in secret", exc_info=True)
+            raise ValueError(f"Secret '{self.SECRET_NAME}' contains invalid JSON") from e
 
     def generate_s3_object_key(self) -> str:
         """
@@ -301,10 +280,7 @@ class FredExtractor:
         month = self.observation_date.format("MM")
         date_string = self.observation_date.format("YYYY-MM-DD")
 
-        object_key = (
-            f"fred/{self.series_id}/year={year}/month={month}/"
-            f"{self.series_id}-{date_string}.json"
-        )
+        object_key = f"fred/{self.series_id}/year={year}/month={month}/{self.series_id}-{date_string}.json"
 
         logger.debug(f"[FredExtractor][generate_s3_object_key] Generated key: {object_key}")
         return object_key

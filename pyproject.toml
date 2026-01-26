@@ -7,7 +7,7 @@ no_package = true
 description = "Run tests with Python 3.14"
 deps = [
     "-rrequirements.txt",
-    "-rlambda_/requirements.txt",
+    "-rsrc/requirements.txt",
     "pytest",
     "pytest-cov",
     "pre-commit",
@@ -22,7 +22,7 @@ commands = [
 [tool.pytest.ini_options]
 addopts = [
     "--junitxml=test-reports/junit.xml",
-    "--cov=lambda_/fred_extractor",
+    "--cov=src/fred_extractor",
     "--cov-report=xml:test-reports/coverage.xml",
     "--cov-report=html",
 ]
@@ -32,19 +32,22 @@ testpaths = [
 python_files = [
     "test_*.py"
 ]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 
 [tool.coverage.run]
-source = ["lambda_/fred_extractor"]
+source = ["src/fred_extractor"]
 omit = ["*/__init__.py"]
 
 [tool.coverage.report]
-include = ["lambda_/fred_extractor/*"]
+include = ["src/fred_extractor/*"]
 show_missing = true
 
 [tool.ruff]
 line-length = 120
 indent-width = 4
-include = ["lambda_/**/*.py", "stacks/**/*.py"]
+include = ["src/**/*.py", "stacks/**/*.py"]
 
 [tool.ruff.lint]
 select = [

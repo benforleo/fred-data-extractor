@@ -3,6 +3,7 @@ import os
 from typing import Any
 
 import boto3
+
 from fred_extractor.fred_extractor import FredExtractor
 
 logger = logging.getLogger()
@@ -13,6 +14,7 @@ FRED_SERIES_ID = os.getenv("FRED_SERIES_ID", "SP500")
 
 
 session = boto3.Session()
+
 
 def handler(event: dict[str, Any], context: Any) -> dict[str, Any]:
     """Lambda handler for FRED data extraction."""
