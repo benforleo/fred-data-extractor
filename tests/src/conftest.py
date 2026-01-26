@@ -9,6 +9,12 @@ def event_fixture():
         event = json.load(file)
     return event
 
+@pytest.fixture
+def api_response_fixture():
+    with open("./tests/data/response.json", "r") as file:
+        response = json.load(file)
+    return response
+
 
 @pytest.fixture
 def secret_response_fixture():
