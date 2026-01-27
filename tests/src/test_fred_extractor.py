@@ -96,7 +96,7 @@ class TestFredExtractor:
 
 
     def test_retrieve_api_key_returns_key_from_secrets_manager(self, event_fixture, secret_response_fixture):
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
         client = session.client('secretsmanager')
 
@@ -117,7 +117,7 @@ class TestFredExtractor:
 
 
     def test_retrieve_api_key_caches_result_across_multiple_calls(self, event_fixture):
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
         client = session.client('secretsmanager')
 
@@ -146,7 +146,7 @@ class TestFredExtractor:
 
 
     def test_retrieve_api_key_raises_value_error_for_missing_key_in_secret(self, event_fixture):
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
         client = session.client('secretsmanager')
 
@@ -166,8 +166,7 @@ class TestFredExtractor:
                     fred.retrieve_api_key()
 
     def test_retrieve_api_key_raises_value_error_for_invalid_json(self, event_fixture):
-        """Test ValueError when secret contains invalid JSON"""
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
 
         client = session.client('secretsmanager')
@@ -187,7 +186,7 @@ class TestFredExtractor:
                     fred.retrieve_api_key()
 
     def test_retrieve_api_key_raises_client_error_for_missing_secret(self, event_fixture):
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
 
         client = session.client('secretsmanager')
@@ -203,7 +202,7 @@ class TestFredExtractor:
                     fred.retrieve_api_key()
 
     def test_retrieve_api_key_raises_client_error_for_access_denied(self, event_fixture):
-        session = boto3.session.Session()
+        session = boto3.session.Session(region_name='us-east-1')
         fred = FredExtractor(event_fixture, None, session, "bucket")
 
         client = session.client('secretsmanager')
