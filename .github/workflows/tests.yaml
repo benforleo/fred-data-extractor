@@ -1,5 +1,5 @@
 name: Python Tests
-run-name: ${{ github.actor }} is running ${{ vars.JOB_NAME }}
+run-name: Running tests on ${{ github.ref_name }}
 on:
   - push
   - workflow_call
