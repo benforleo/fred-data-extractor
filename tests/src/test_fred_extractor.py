@@ -3,7 +3,6 @@ import pendulum
 import pytest
 from unittest.mock import Mock, patch
 
-from botocore.session import Session
 from requests import HTTPError
 from botocore.stub import Stubber
 from botocore.exceptions import ClientError

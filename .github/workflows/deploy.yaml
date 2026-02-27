@@ -26,18 +26,18 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-oidc-FredDataExtractorRole-PU83N4BU7R4X
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions-oidc
           aws-region: us-east-1
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '16.20.0'
+          node-version: '22.14.0'
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
 
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.14'
 
       - name: Install Python dependencies
         run: python3 -m pip install -r requirements.txt
