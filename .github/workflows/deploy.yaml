@@ -8,7 +8,7 @@ on:
 
 jobs:
   run-tests:
-    uses: benforleo/fred-data-extractor/.github/workflows/tests.yaml@main
+    uses: ./.github/workflows/tests.yaml
 
   aws-deployment:
     name: Deploy CDK App
