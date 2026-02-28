@@ -48,3 +48,4 @@ pip install tox
 # Run tests using tox with pyproject.toml
 echo "Running tox..."
 tox "$@"
+
