@@ -1,5 +1,5 @@
 name: Python Tests
-run-name: ${{ github.actor }} is running ${{ vars.JOB_NAME }}
+run-name: Running tests on ${{ github.ref_name }}
 on:
   - push
   - workflow_call
@@ -10,14 +10,25 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-      - run: python3 -m pip install tox
-      - run: tox
+          python-version: '3.14'
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '22.14.0'
+
+      - name: Install AWS CDK
+        run: npm install -g aws-cdk@latest
+
+      - name: Run tests
+        run: ./scripts/fred-tests.sh
+
       - name: Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./coverage/lcov.info
+
       - run: echo "🍏 This job's status is ${{ job.status }}."
