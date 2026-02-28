@@ -32,6 +32,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '22.14.0'
+
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
 
@@ -43,7 +44,6 @@ jobs:
         run: python3 -m pip install -r requirements.txt
 
       - name: Deploy CDK Application
-        run: cdk deploy --require-approval never --tags app=fred-data-extractor
-        env:
-          FRED_BUCKET_NAME: ${{ secrets.FRED_BUCKET_NAME }}
+        run: ./scripts/fred.sh -b ${{ secrets.FRED_BUCKET_NAME }}
+
 

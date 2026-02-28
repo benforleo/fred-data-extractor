@@ -22,14 +22,13 @@ jobs:
       - name: Install AWS CDK
         run: npm install -g aws-cdk@latest
 
-      - run: python3 -m pip install tox
+      - name: Run tests
+        run: ./scripts/tests.sh
 
-      - run: tox
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: ./coverage/lcov.info
 
-#      - name: Coveralls
-#        uses: coverallsapp/github-action@master
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          path-to-lcov: ./coverage/lcov.info
-#
-#      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - run: echo "🍏 This job's status is ${{ job.status }}."
